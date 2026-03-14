@@ -368,8 +368,7 @@ def get_group_details(group_id):
     
     members = db.execute('''
         SELECT u.username, m.role, m.joined_at, 
-               (SELECT subject FROM active_sessions WHERE user_id = u.id) as active_subject,
-               (SELECT strftime('%s', 'now') - strftime('%s', start_time)) / 60 as active_minutes
+                (SELECT (strftime('%s', 'now') - strftime('%s', start_time)) / 60 FROM active_sessions WHERE user_id = u.id) as active_minutes
         FROM users u
         JOIN group_members m ON u.id = m.user_id
         WHERE m.group_id = ?
