@@ -22,6 +22,17 @@ from database import init_db, get_db, create_notification
 app = Flask(__name__, static_folder='../', static_url_path='')
 app.secret_key = secrets.token_hex(32)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+# Allow all origins for local dev with credentials
+@app.after_request
+def after_request(response):
+    origin = request.headers.get('Origin')
+    if origin:
+        response.headers.add('Access-Control-Allow-Origin', origin)
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type, X-User-Id, X-Username')
+        response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+    return response
+
 
 @app.route("/")
 def home():
